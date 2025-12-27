@@ -8,7 +8,7 @@ debian:
   arch:
   - amd64
   vars:
-    repo: https://github.com/stonepie922/xlibre-sp/os/debian
+    repo: https://github.com/stonepie922/debian
     data_url: https://debian.pages.debian.net/distro-info-data/debian.csv
     release_url: https://deb.debian.org/debian/dists/%{release}/Release
     image: debian
@@ -35,7 +35,7 @@ devuan:
   arch:
   - amd64
   vars:
-    repo: https://github.com/stonepie922/xlibre-sp/os/devuan
+    repo: https://github.com/stonepie922/devuan
     data_url: https://git.devuan.org/devuan/distro-info-data/raw/branch/suites/unstable/devuan.csv
     release_url: http://deb.devuan.org/merged/dists/%{release}/Release
     image: devuan/devuan

@@ -1,4 +1,4 @@
-prefix: https://github.com/stonepie922/xlibre-sp/os/
+prefix: https://github.com/stonepie922/
 head: false
 packages:
   xlibre: 1:7.8+4
