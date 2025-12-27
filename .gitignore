@@ -1,0 +1,6 @@
+docker-bake.hcl
+/downloads/
+/output/
+/packages/
+/repos/
+/tmp/

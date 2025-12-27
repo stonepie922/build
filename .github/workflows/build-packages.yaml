@@ -1,0 +1,85 @@
+name: build-packages
+
+on:
+  push:
+    branches: [ '**' ]
+  workflow_dispatch:
+
+jobs:
+  generate_build_jobs:
+    runs-on: ubuntu-latest
+    outputs:
+      jobs: ${{ steps.generate_jobs.outputs.jobs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - name: Install thor
+        run: |
+          gem install thor
+
+      - name: Generate build jobs
+        id: generate_jobs
+        run: |
+          jobs="$(thor matrix:jobs --compact --runners=amd64:ubuntu-24.04 arm64:ubuntu-24.04-arm)"
+          echo "jobs=$jobs" >> $GITHUB_OUTPUT
+
+  build:
+    needs: generate_build_jobs
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.generate_build_jobs.outputs.jobs) }}
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - name: Set target
+        run: echo "TARGET=${{ matrix.dist }}-${{ matrix.codename }}-${{ matrix.arch }}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      - name: Install build requirements
+        run: |
+          gem install thor
+
+      - name: Clone package repositories
+        run: |
+          thor pkg:clone
+
+      - name: Build
+        run: |
+          thor build:bake:gen --targets $TARGET
+          thor build:bake
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: success-${{ env.TARGET }}
+          path: output/
+          include-hidden-files: true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: failure-${{ env.TARGET }}
+          path: output/
+          include-hidden-files: true

@@ -1,0 +1,53 @@
+debian:
+  codenames:
+  - trixie
+  suites:
+    stable: trixie
+    testing: forky
+    unstable:
+  arch:
+  - amd64
+  vars:
+    repo: https://github.com/stonepie922/xlibre-sp/os/debian
+    data_url: https://debian.pages.debian.net/distro-info-data/debian.csv
+    release_url: https://deb.debian.org/debian/dists/%{release}/Release
+    image: debian
+    released_only: false
+    suite_required: true
+    systemd: true
+    min_version: 12
+    exclude:
+    - experimental
+    - sid
+    aliases:
+    - old: testing
+      new:
+        codename: sid
+        suite: unstable
+devuan:
+  codenames:
+  - excalibur
+  suites:
+    oldstable:
+    stable: excalibur
+    testing:
+    unstable:
+  arch:
+  - amd64
+  vars:
+    repo: https://github.com/stonepie922/xlibre-sp/os/devuan
+    data_url: https://git.devuan.org/devuan/distro-info-data/raw/branch/suites/unstable/devuan.csv
+    release_url: http://deb.devuan.org/merged/dists/%{release}/Release
+    image: devuan/devuan
+    released_only: false
+    suite_required: true
+    systemd: false
+    min_version: 5
+    exclude:
+    - experimental
+    - ceres
+    aliases:
+    - old: testing
+      new:
+        codename: ceres
+        suite: unstable
